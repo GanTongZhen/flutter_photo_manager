@@ -317,7 +317,19 @@
             }];
             
         } else if ([call.method isEqualToString:@"saveImage"]) {
-            NSData *data = [call.arguments[@"image"] data];
+             if (![call.arguments isKindOfClass:NSDictionary.class]) {
+                [handler reply: nil];
+                return;
+            }
+        
+            id image = call.arguments[@"image"];
+            if (![image isKindOfClass: NSObject.class] ||
+                ![(NSObject*)image respondsToSelector:@selector(data)]) {
+                [handler reply: nil];
+                return;
+            }
+         
+            NSData *data = [image data];
             NSString *title = call.arguments[@"title"];
             NSString *desc = call.arguments[@"desc"];
             
